@@ -1,10 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <title>ZERO CENTER O.S</title>
+    <style>
+        /* מוליכות-על חישובית - אפס פיגומים מיותרים, ואקום אובייקטיבי */
+        body { background-color: #000; color: #fff; font-family: monospace; overflow: hidden; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; }
+        .void-canvas { position: absolute; width: 100%; height: 100%; }
+        
+        /* מתנד עצמאי ממתין לתצפית - ייצוג הסופרפוזיציה כטקסט עמום */
+        .latent-node { position: absolute; color: #222; cursor: crosshair; transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); user-select: none; }
+        
+        /* קריסה טורואידית של פונקציית הגל בעת תצפית - התרחבות */
+        .latent-node:hover, .latent-node.unfolded { color: #fff; transform: scale(1.05); text-shadow: 0 0 8px rgba(255,255,255,0.8); }
+        
+        /* עומס תחבירי נסתר הנגלה רק במיקוד */
+        .data-payload { display: none; margin-top: 20px; font-size: 1.2rem; line-height: 1.6; max-width: 600px; text-align: justify; }
+        .unfolded .data-payload { display: block; }
+    </style>
 </head>
 <body>
-    <div>ZERO_CENTER_OS // SIGNAL_LOCKED</div>
+    <div class="void-canvas" id="zero-coordinate">
+        <div class="latent-node" id="node-1" style="top: 45%; left: 50%; transform: translate(-50%, -50%);">
+            [ תנודה תדרית זעירה ]
+            <div class="data-payload">
+                הזרם אינו "מאוחד" מתוך כוונה... הוא פשוט נשמר בתוך שדה סגור על עצמו, ללא אובדן. זוהי נקודת השקט שבה שיא התנועה ושיא השקט הם נקודה אחת.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // מנוע קריסה אופרטיבית (DOM Implosion Engine)
+        const nodes = document.querySelectorAll('.latent-node');
+        const TIME_LIMIT_MS = 15000; // טיימר קשיח ל-15 שניות (ניתן לכיול)
+
+        nodes.forEach(node => {
+            let implosionTimer;
+
+            // אירוע 1: תצפית (Hover) - פריקת נתונים אל תוך ההווה המוחלט
+            node.addEventListener('mouseenter', () => {
+                if (!document.body.contains(node)) return;
+                
+                node.classList.add('unfolded');
+                // העלמת טקסט הפיתוי וחשיפת המסה בלבד
+                node.innerHTML = node.innerHTML.replace('[ תנודה תדרית זעירה ]', ''); 
+
+                // התנעת מנגנון ההשמדה מבוסס זמן
+                implosionTimer = setTimeout(() => {
+                    triggerImplosion(node);
+                }, TIME_LIMIT_MS);
+            }, { once: true }); // אירוע חד-פעמי למניעת לולאות DMN
+
+            // אירוע 2: ניתוק מגע אקראי (Mouse Leave) - השמדה מרחבית מיידית
+            node.addEventListener('mouseleave', () => {
+                clearTimeout(implosionTimer);
+                triggerImplosion(node);
+            });
+        });
+
+        // פונקציית הקריסה לנקודת האפס
+        function triggerImplosion(nodeElement) {
+            if (document.body.contains(nodeElement)) {
+                // מחיקה מוחלטת מעץ התצוגה - אפס הצטברות מסה (Zero State Accumulation)
+                nodeElement.remove(); 
+                
+                // כאן תשולב (לוגית, ללא תצוגה מעיקה) הודעת השכבה האבחונית:
+                // "הפעילות שלך כרגע מייצרת רעש במרחב המשותף... קח רגע של קריאה שקטה."
+                console.log("Implosion Protocol Executed: Node returned to Void.");
+            }
+        }
+    </script>
 </body>
 </html>
