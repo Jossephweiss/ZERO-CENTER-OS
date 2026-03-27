@@ -3,22 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title>ZERO CENTER O.S</title>
-    <style>
+   <style>
         /* ואקום אובייקטיבי */
         body { background-color: #000; color: #fff; font-family: monospace; overflow: hidden; margin: 0; position: relative; height: 100vh; width: 100vw; }
-        .void-canvas { position: absolute; width: 100%; height: 100%; }
+        .void-canvas { position: absolute; width: 100%; height: 100%; transition: background-color 0.5s ease; }
         
         /* מתנד עצמאי ממתין לתצפית - מיקום אקראי */
-        .latent-node { position: absolute; color: #555; cursor: crosshair; transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); user-select: none; padding: 40px; text-align: right; transform: translate(-50%, -50%); z-index: 1; }
-        .latent-node:hover, .latent-node.unfolded { color: #fff; transform: translate(-50%, -50%) scale(1.02); text-shadow: 0 0 8px rgba(255,255,255,0.6); z-index: 10; }
+        .latent-node { position: absolute; color: #555; cursor: crosshair; transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); user-select: none; padding: 40px; text-align: right; transform: translate(-50%, -50%); z-index: 1; opacity: 1; }
+        
+        /* מתנד במצב פתוח: נשאב למרכז המסך המדויק */
+        .latent-node.unfolded { color: #fff; top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) scale(1.02); text-shadow: 0 0 8px rgba(255,255,255,0.6); z-index: 10; cursor: default; }
+        
+        /* השתקת רעשי רקע: העלמת שאר המתנדים בזמן תצפית */
+        .void-canvas.focus-active .latent-node:not(.unfolded) { opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
+
         .trigger-text { font-size: 1.2rem; text-align: center; display: block; white-space: nowrap; }
 
-        /* אדריכלות עומס תחבירי: גופן קוד, רוחב חסום, צפיפות גבוהה */
+        /* אדריכלות עומס תחבירי */
         .data-payload { display: none; margin-top: 10px; font-size: 1.05rem; line-height: 1.35; width: 650px; text-align: justify; }
         .unfolded .data-payload { display: block; }
         
         .payload-section { margin-bottom: 12px; }
-        .payload-title { font-weight: bold; color: #ddd; margin-bottom: 2px; display: block; } /* הובהר ל-#ddd בהתאם להנחיה */
+        .payload-title { font-weight: bold; color: #ddd; margin-bottom: 2px; display: block; }
         
         /* מפריד מכני לקראת השמדה */
         .implosion-separator { text-align: center; font-weight: bold; letter-spacing: 6px; margin: 24px 0 16px 0; color: #444; }
@@ -123,22 +129,16 @@
         const container = document.getElementById('zero-coordinate');
         const TIME_LIMIT_MS = 120000; // טיימר קשיח: 120 שניות
 
-        // מנוע פיזור קוונטי מכויל (Calibrated Quantum Scattering Engine)
+        // מנוע פיזור קוונטי עם קריסה למרכז והשתקת רקע
         wavesData.forEach(wave => {
-            // התיקון: מעבר לחישוב קואורדינטות לפי פיקסלים ומרחב ביטחון (vPadding) מהשוליים.
-            const wWidth = window.innerWidth;
-            const wHeight = window.innerHeight;
-            const hPadding = wWidth * 0.15; // ואקום צדדי של 15% מהרוחב
-            const vPadding = 100; // ואקום ביטחון עליון ותחתון קשיח של 100 פיקסלים.
-
-            // חישוב הקואורדינטה האקראית, מנוכה בטווח הואקום.
-            const randomX = Math.floor(Math.random() * (wWidth - (hPadding * 2))) + hPadding;
-            const randomY = Math.floor(Math.random() * (wHeight - (vPadding * 2))) + vPadding;
+            // חזרה לאחוזים סטטיים (10% עד 90%) - אין סכנת חיתוך כי המתנד נע למרכז בפתיחה
+            const randomX = Math.floor(Math.random() * 80) + 10;
+            const randomY = Math.floor(Math.random() * 80) + 10;
 
             const nodeDiv = document.createElement('div');
             nodeDiv.className = `latent-node node-${wave.id}`;
-            nodeDiv.style.left = `${randomX}px`; // מעבר מ-vw ל-px לדיוק מוחלט.
-            nodeDiv.style.top = `${randomY}px`; // מעבר מ-vh ל-px לדיוק מוחלט.
+            nodeDiv.style.left = `${randomX}vw`;
+            nodeDiv.style.top = `${randomY}vh`;
 
             let sectionsHtml = wave.sections.map(sec => `
                 <div class="payload-section">
@@ -165,20 +165,18 @@
 
             container.appendChild(nodeDiv);
 
-            // הפעלת מנגנון הקריסה הדואלי
+            // מנגנון קריסה והשתקה דואלי
             let implosionTimer;
             const triggerText = nodeDiv.querySelector('.trigger-text');
-            const dataPayload = nodeDiv.querySelector('.data-payload');
 
             nodeDiv.addEventListener('mouseenter', () => {
                 if (!document.body.contains(nodeDiv)) return;
                 
+                // תנועה למרכז והפעלת השתקת סביבה
                 nodeDiv.classList.add('unfolded');
+                container.classList.add('focus-active'); 
+                
                 if (triggerText) triggerText.style.display = 'none';
-
-                // התיקון: אכיפת הגבהת המתנד למעלה כדי למנוע דחיסה למטה. 
-                // הואקום הקשיח מבטיח שהוא לא ייחתך למעלה.
-                nodeDiv.style.transform = 'translate(-50%, -100%) scale(1.02)';
 
                 implosionTimer = setTimeout(() => {
                     triggerImplosion(nodeDiv);
@@ -194,6 +192,10 @@
         function triggerImplosion(nodeElement) {
             if (document.body.contains(nodeElement)) {
                 nodeElement.remove(); 
+                // הסרת השתקת הסביבה אם אין עוד מתנדים פתוחים
+                if (!document.querySelector('.unfolded')) {
+                    container.classList.remove('focus-active');
+                }
             }
         }
-    </script>
+       <script>
