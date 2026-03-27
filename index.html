@@ -31,8 +31,8 @@
     <div class="void-canvas" id="zero-coordinate">
         </div>
 
-    <script>
-        // וקטור 3: מסד נתונים סטטי
+   <script>
+        // וקטור 3: מסד נתונים סטטי (ללא שינוי במסה)
         const wavesData = [
             {
                 id: 0,
@@ -123,16 +123,22 @@
         const container = document.getElementById('zero-coordinate');
         const TIME_LIMIT_MS = 120000; // טיימר קשיח: 120 שניות
 
-        // מנוע פיזור קוונטי (Quantum Scattering Engine)
+        // מנוע פיזור קוונטי מכויל (Calibrated Quantum Scattering Engine)
         wavesData.forEach(wave => {
-            // חישוב קואורדינטות אקראיות - מרווח ביטחון מהשוליים (15% עד 85%)
-            const randomX = Math.floor(Math.random() * 70) + 15;
-            const randomY = Math.floor(Math.random() * 70) + 15;
+            // התיקון: מעבר לחישוב קואורדינטות לפי פיקסלים ומרחב ביטחון (vPadding) מהשוליים.
+            const wWidth = window.innerWidth;
+            const wHeight = window.innerHeight;
+            const hPadding = wWidth * 0.15; // ואקום צדדי של 15% מהרוחב
+            const vPadding = 100; // ואקום ביטחון עליון ותחתון קשיח של 100 פיקסלים.
+
+            // חישוב הקואורדינטה האקראית, מנוכה בטווח הואקום.
+            const randomX = Math.floor(Math.random() * (wWidth - (hPadding * 2))) + hPadding;
+            const randomY = Math.floor(Math.random() * (wHeight - (vPadding * 2))) + vPadding;
 
             const nodeDiv = document.createElement('div');
             nodeDiv.className = `latent-node node-${wave.id}`;
-            nodeDiv.style.left = `${randomX}vw`;
-            nodeDiv.style.top = `${randomY}vh`;
+            nodeDiv.style.left = `${randomX}px`; // מעבר מ-vw ל-px לדיוק מוחלט.
+            nodeDiv.style.top = `${randomY}px`; // מעבר מ-vh ל-px לדיוק מוחלט.
 
             let sectionsHtml = wave.sections.map(sec => `
                 <div class="payload-section">
@@ -162,12 +168,17 @@
             // הפעלת מנגנון הקריסה הדואלי
             let implosionTimer;
             const triggerText = nodeDiv.querySelector('.trigger-text');
+            const dataPayload = nodeDiv.querySelector('.data-payload');
 
             nodeDiv.addEventListener('mouseenter', () => {
                 if (!document.body.contains(nodeDiv)) return;
                 
                 nodeDiv.classList.add('unfolded');
                 if (triggerText) triggerText.style.display = 'none';
+
+                // התיקון: אכיפת הגבהת המתנד למעלה כדי למנוע דחיסה למטה. 
+                // הואקום הקשיח מבטיח שהוא לא ייחתך למעלה.
+                nodeDiv.style.transform = 'translate(-50%, -100%) scale(1.02)';
 
                 implosionTimer = setTimeout(() => {
                     triggerImplosion(nodeDiv);
@@ -186,5 +197,3 @@
             }
         }
     </script>
-</body>
-</html>
