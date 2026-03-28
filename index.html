@@ -6,31 +6,29 @@
     <style>
         /* ואקום אובייקטיבי */
         body { background-color: #000; color: #fff; font-family: monospace; overflow: hidden; margin: 0; position: relative; height: 100vh; width: 100vw; }
-        .void-canvas { position: absolute; width: 100%; height: 100%; transition: background-color 0.5s ease; }
+        .void-canvas { position: absolute; width: 100%; height: 100%; }
 
-        /* מתנד עצמאי ממתין לתצפית - מיקום אקראי */
+        /* מתנד עצמאי - מעוגן תמיד למרכז (סימולטור אימון אקטיבי) */
         .latent-node { 
             position: absolute; 
-            color: #555; 
-            cursor: crosshair; 
-            user-select: none; 
-            padding: 40px; 
-            text-align: right; 
+            top: 50%; left: 50%; 
             transform: translate(-50%, -50%); 
-            z-index: 1; 
-            transition: color 0.4s ease;
+            color: #555; cursor: crosshair; 
+            transition: color 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
+            user-select: none; padding: 40px; z-index: 1; 
+            opacity: 0; animation: fadeInTrigger 1s forwards; 
         }
+        @keyframes fadeInTrigger { to { opacity: 1; } }
 
-        /* מצב פריקה (הווה מוחלט - העברת שליטה לאנימציות) */
+        /* מצב תצפית - הקפאת מיקום והעברת שליטה לפיזיקה החזותית */
         .latent-node.unfolded { 
             color: #fff; 
-            transform: translate(-50%, -100%) scale(1.02); 
+            transform: translate(-50%, -50%) scale(1.02); 
             text-shadow: 0 0 8px rgba(255,255,255,0.6); 
-            z-index: 10; 
-            cursor: default; 
+            z-index: 10; cursor: default; 
         }
 
-        .trigger-text { font-size: 1.2rem; text-align: center; display: block; white-space: nowrap; transition: opacity 0.3s ease; }
+        .trigger-text { font-size: 1.2rem; text-align: center; display: block; white-space: nowrap; direction: rtl; }
 
         /* אדריכלות עומס תחבירי */
         .data-payload { 
@@ -40,52 +38,54 @@
             line-height: 1.35; 
             width: 650px; 
             text-align: justify; 
-            opacity: 0.3; /* הילה עמומה בסיסית */
+            direction: rtl; 
+            opacity: 0; /* ואקום מוחלט טרם כניסת הגל */
         }
         
-        /* פיזיקה 1: חזית גל שוטפת מהמרכז החוצה */
+        /* פיזיקה 1: התפשטות חזית הגל (2.0 שניות) */
         .unfolded .data-payload { 
             display: block; 
-            animation: waveFront 0.6s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+            animation: waveFront 2.0s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
         }
-
         @keyframes waveFront {
-            0% { opacity: 0.3; clip-path: circle(0% at 50% 50%); }
+            0% { opacity: 0; clip-path: circle(0% at 50% 50%); }
             100% { opacity: 1; clip-path: circle(150% at 50% 50%); }
         }
 
-        /* פיזיקה 2: קריסה טורואידית גיאומטרית */
+        /* פיזיקה 2: קריסה טורואידית גיאומטרית אגרסיבית (1.0 שניות) */
         .latent-node.imploding {
             animation: torusCollapse 1.0s cubic-bezier(0.5, 0, 0.1, 1) forwards !important;
             pointer-events: none;
         }
-
         @keyframes torusCollapse {
-            0% { transform: translate(-50%, -100%) scale(1.02) rotate(0deg); opacity: 1; }
-            100% { transform: translate(-50%, -100%) scale(0) rotate(720deg); opacity: 0; }
+            0% { transform: translate(-50%, -50%) scale(1.02) rotate(0deg); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(0) rotate(720deg); opacity: 0; }
         }
 
         .payload-section { margin-bottom: 12px; }
         .payload-title { font-weight: bold; color: #ddd; margin-bottom: 2px; display: block; }
-
-        /* מפריד מכני לקראת השמדה */
-        .implosion-separator { text-align: center; font-weight: bold; letter-spacing: 6px; margin: 24px 0 16px 0; color: #444; }
         
+        /* מפריד מכני */
+        .implosion-separator { text-align: center; font-weight: bold; letter-spacing: 6px; margin: 24px 0 16px 0; color: #444; }
+
+        /* חיווי מתח קוגניטיבי (פס התקדמות סמוי) */
+        .tension-bar { position: absolute; bottom: 0; left: 0; height: 2px; background-color: #444; width: 0%; transition: width linear; display: none; }
+        .unfolded .tension-bar { display: block; }
+
         /* עיצוב ייחודי לגל 0 */
         .node-0 .data-payload { text-align: center; font-size: 1.5rem; width: auto; min-width: 300px; line-height: 1.8; }
     </style>
 </head>
 <body>
     <div class="void-canvas" id="zero-coordinate"></div>
+
     <script>
-        // וקטור 3: מסד נתונים סטטי מלא
+        // מסד הנתונים הסגור המלא (גלים 0 עד 7)
         const wavesData = [
             {
                 id: 0,
                 trigger: "[ תנודה תדרית זעירה: גל 0 ]",
-                sections: [
-                    { title: "", text: "שבעה גלים<br>לא לקריאה — לחציה" }
-                ],
+                sections: [{ title: "", text: "שבעה גלים<br>לא לקריאה — לחציה" }],
                 implosion: null
             },
             {
@@ -167,21 +167,35 @@
         ];
 
         const container = document.getElementById('zero-coordinate');
-        const TIME_LIMIT_MS = 120000;
+        let availableWaves = [...wavesData];
+        
+        // הגדרות אימון - עומס עולה (Time Compression)
+        const BASE_TIME_MS = 120000; // 120 שניות
+        const FRICTION_STEP_MS = 15000; 
+        let completedWavesCount = 0;
+        
+        let isNodeActive = false;
+        let cooldownActive = false;
 
-        wavesData.forEach(wave => {
-            const wWidth = window.innerWidth;
-            const wHeight = window.innerHeight;
-            const hPadding = wWidth * 0.15; 
-            const vPadding = 150; 
+        // האזנה לתנועה במרחב לחשיפת המתנד המרכזי (סימולטור פעיל)
+        window.addEventListener('mousemove', () => {
+            if (!isNodeActive && !cooldownActive && availableWaves.length > 0) {
+                spawnNextWave();
+            }
+        });
 
-            const randomX = Math.floor(Math.random() * (wWidth - (hPadding * 2))) + hPadding;
-            const randomY = Math.floor(Math.random() * (wHeight - (vPadding * 2))) + vPadding;
+        function spawnNextWave() {
+            isNodeActive = true;
+            
+            // שליפה אקראית
+            const randIndex = Math.floor(Math.random() * availableWaves.length);
+            const wave = availableWaves.splice(randIndex, 1)[0];
+
+            // חישוב עומס הזמן הנוכחי
+            const currentFrictionTime = BASE_TIME_MS - (completedWavesCount * FRICTION_STEP_MS);
 
             const nodeDiv = document.createElement('div');
             nodeDiv.className = `latent-node node-${wave.id}`;
-            nodeDiv.style.left = `${randomX}px`;
-            nodeDiv.style.top = `${randomY}px`;
 
             let sectionsHtml = wave.sections.map(sec => `
                 <div class="payload-section">
@@ -204,37 +218,52 @@
                     ${sectionsHtml}
                     ${implosionHtml}
                 </div>
+                <div class="tension-bar"></div>
             `;
 
             container.appendChild(nodeDiv);
 
             let implosionTimer;
             const triggerText = nodeDiv.querySelector('.trigger-text');
-            
+            const tensionBar = nodeDiv.querySelector('.tension-bar');
+
             nodeDiv.addEventListener('mouseenter', () => {
                 if (!document.body.contains(nodeDiv) || nodeDiv.classList.contains('imploding')) return;
                 
                 nodeDiv.classList.add('unfolded');
                 if (triggerText) triggerText.style.opacity = '0';
-                
+
+                // הפעלת מד החיכוך החזותי
+                tensionBar.style.transitionDuration = `${currentFrictionTime}ms`;
+                setTimeout(() => { tensionBar.style.width = '100%'; }, 50);
+
                 implosionTimer = setTimeout(() => {
                     triggerImplosion(nodeDiv);
-                }, TIME_LIMIT_MS);
+                }, currentFrictionTime);
             }, { once: true });
 
             nodeDiv.addEventListener('mouseleave', () => {
                 clearTimeout(implosionTimer);
                 triggerImplosion(nodeDiv);
             });
-        });
+        }
 
         // פונקציית הקריסה הטורואידית (השהייה של 1.0 שניות)
         function triggerImplosion(nodeElement) {
             if (document.body.contains(nodeElement) && !nodeElement.classList.contains('imploding')) {
                 nodeElement.classList.add('imploding');
+                
                 setTimeout(() => {
                     if (document.body.contains(nodeElement)) {
-                        nodeElement.remove();
+                        nodeElement.remove(); 
+                        completedWavesCount++;
+                        
+                        // נעילת ואקום לשתי שניות לפני שאפשר לעורר גל חדש
+                        cooldownActive = true;
+                        setTimeout(() => {
+                            isNodeActive = false;
+                            cooldownActive = false;
+                        }, 2000);
                     }
                 }, 1000); // תואם לזמן האנימציה הגיאומטרית
             }
