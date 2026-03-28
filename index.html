@@ -39,10 +39,10 @@
             transform-origin: center center;
         }
 
-        /* פיזיקה 1: הופעת קצר DMN (15 פעימות מהירות בדחיסה של 1 שניה) */
+        /* פיזיקה 1: הופעת קצר DMN (15 פעימות מהירות בדחיסה של 0.5 שניות) */
         .unfolded .data-payload {
             display: block;
-            animation: lightningStrike 1s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+            animation: lightningStrike 0.5s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
         }
         
         /* מיפוי 15 שיאי אטימות (Pulses) בצפיפות קצה לאורך ציר הזמן */
@@ -81,10 +81,10 @@
             100% { opacity: 1; filter: brightness(1) contrast(1); text-shadow: none; } /* התייצבות מוחלטת */
         }
 
-        /* פיזיקה 2: מערבולת דיפרנציאלית (קריסה לנוזל מהמרכז לשוליים - 2 שניות) */
+        /* פיזיקה 2: מערבולת דיפרנציאלית (קריסה לנוזל מהמרכז לשוליים - 1 שניה) */
         .latent-node.imploding .data-payload {
             filter: url(#liquid-vortex);
-            animation: differentialVortex 2s cubic-bezier(0.5, 0, 0.1, 1) forwards !important;
+            animation: differentialVortex 1s cubic-bezier(0.5, 0, 0.1, 1) forwards !important;
             pointer-events: none;
         }
 
@@ -149,7 +149,7 @@
         const waveLoadTimes = [100000, 91000, 83000, 75000, 69000, 62000, 57000];
         let currentWaveIndex = 0;
         
-        const IMPLOSION_ANIMATION_MS = 2000; // זמן קבוע לקריסה טורואידית 
+        const IMPLOSION_ANIMATION_MS = 1000; // זמן קבוע לקריסה טורואידית בלבד
         
         let isNodeActive = false;
         let cooldownActive = false;
