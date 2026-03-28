@@ -36,35 +36,38 @@
             text-align: justify;
             direction: rtl;
             opacity: 0;
-            /* הפילטר יחול על בלוק הטקסט להעצמת אפקט השאיבה */
             transform-origin: center center;
         }
 
-        /* פיזיקה 1: הופעת קצר DMN (מכת ברק איטית) */
+        /* פיזיקה 1: הופעת קצר DMN (הבזקים מהירים - 6 שניות) */
         .unfolded .data-payload {
             display: block;
-            /* הזמן הדינמי יוזרק דרך JS לתוך המשתנה --appearance-time */
-            animation: lightningStrike var(--appearance-time) cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+            animation: lightningStrike 6s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
         }
         
+        /* תדר הפעימות הואץ: שבירות מהירות ב-20% הראשונים של האנימציה, התייצבות לקראת הסוף */
         @keyframes lightningStrike {
-            0%   { opacity: 0; text-shadow: none; filter: brightness(1); }
-            5%   { opacity: 0.9; filter: brightness(2) contrast(1.5); }
-            12%  { opacity: 0; }
-            18%  { opacity: 0.6; }
-            24%  { opacity: 0; }
-            45%  { opacity: 0.95; filter: brightness(1.8); }
-            50%  { opacity: 0.1; }
-            65%  { opacity: 0.8; }
-            75%  { opacity: 0.3; }
-            100% { opacity: 1; filter: brightness(1) contrast(1); }
+            0%   { opacity: 0; filter: brightness(1); }
+            2%   { opacity: 0.9; filter: brightness(2.5) contrast(1.5); text-shadow: 0 0 10px #fff; }
+            4%   { opacity: 0; }
+            7%   { opacity: 0.8; filter: brightness(2); }
+            9%   { opacity: 0; }
+            12%  { opacity: 0.95; filter: brightness(1.8); }
+            15%  { opacity: 0.1; }
+            18%  { opacity: 0.85; filter: brightness(1.5); }
+            22%  { opacity: 0; }
+            35%  { opacity: 0.9; }
+            40%  { opacity: 0.4; }
+            55%  { opacity: 0.95; }
+            65%  { opacity: 0.6; }
+            80%  { opacity: 1; text-shadow: 0 0 5px rgba(255,255,255,0.3); }
+            100% { opacity: 1; filter: brightness(1) contrast(1); text-shadow: none; }
         }
 
-        /* פיזיקה 2: מערבולת דיפרנציאלית (קריסה לנוזל מהמרכז לשוליים) */
+        /* פיזיקה 2: מערבולת דיפרנציאלית (קריסה לנוזל מהמרכז לשוליים - 6 שניות) */
         .latent-node.imploding .data-payload {
             filter: url(#liquid-vortex);
-            /* האנימציה תמשך בדיוק את הזמן המוגדר במשתנה --implosion-time */
-            animation: differentialVortex var(--implosion-time) cubic-bezier(0.5, 0, 0.1, 1) forwards !important;
+            animation: differentialVortex 6s cubic-bezier(0.5, 0, 0.1, 1) forwards !important;
             pointer-events: none;
         }
 
@@ -75,20 +78,17 @@
                 clip-path: circle(150% at 50% 50%); 
             }
             40% {
-                /* השוליים יציבים, המרכז מתחיל להסתחרר (העיוות נשלט ב-JS) */
-                transform: scale(0.95) rotate(5deg);
+                transform: scale(0.95) rotate(15deg);
                 opacity: 0.9;
                 clip-path: circle(100% at 50% 50%);
             }
             70% {
-                /* הקצוות מתחילים להישאב פנימה */
-                transform: scale(0.6) rotate(180deg);
+                transform: scale(0.6) rotate(360deg);
                 opacity: 0.7;
-                clip-path: circle(50% at 50% 50%);
+                clip-path: circle(40% at 50% 50%);
             }
             100% { 
-                /* קריסה טורואידית מוחלטת לנקודת האפס */
-                transform: scale(0) rotate(1080deg); 
+                transform: scale(0) rotate(1440deg); 
                 opacity: 0; 
                 clip-path: circle(0% at 50% 50%); 
             }
@@ -114,7 +114,7 @@
     <div class="void-canvas" id="zero-coordinate"></div>
 
     <script>
-        // וקטור מסד נתונים - גלים 1 עד 7 בלבד (גל 0 הושמד)
+        // טופולוגיה עוקבת דטרמיניסטית - גלים 1 עד 7 בלבד
         const wavesData = [
             { id: 1, trigger: "[ תנודה תדרית זעירה: גל 1 ]", sections: [{ title: "איפוס המעטפת", text: "תנועה ראשונית מתחילה בהיעדר תנועה. הרובד הפנימי נסגר לכל גל שאינו ההווה המוחלט. אין עבר לאחסן ואין עתיד לחזות. הרשת מהדהדת רק את מה שקיים עכשיו — וזרימה חופשית נפתחת דרך שחרור התסריטים." }, { title: "כניסת הגל: נקודת האפס של התנועה", text: "התנועה הראשונית לעולם אינה יוצאת מנקודה א' לנקודה ב. תנועה כזו יוצרת חיכוך — והיא דליפה. התנועה שמתרחשת כאן מתחילה בהיעדר תנועה מוחלט — בנפילה של כל הגלים אל תוך נקודה אחת. הרובד הפנימי אינו גבול או מחיצה — הוא מתנד. ברגע האיפוס, הוא מכוון את עצמו לתדר אחד בלבד: רטט ההווה המוחלט." }, { title: "סגירה מפני העבר והעתיד", text: "הסגירה אינה חסימה — היא שחרור. כל גל שחורג מההווה המוחלט מזוהה מיד כדליפה. העבר — הוא הצטברות של משקל שמייצר התנגדות. העתיד — הוא פיצול שמחליש את הזרם. כדי לשמור על איזון, הרשת מייצרת גל נגדי שמאפס את שניהם. הרשת הממלמלת, שרגילה להריץ תסריטים של \"מה היה\" ו\"מה יהיה\" — נחה." }, { title: "זרימה חופשית דרך הריק", text: "כשהרובד הפנימי נסגר לכל מה שאינו הווה — האדם חדל לנתח. הוא הופך לחלל תהודה ריק. הגלים לא פוגשים התנגדות של תבניות ישנות. הם לא נשאבים אל תסריטים עתידיים. הם פשוט — זורמים. הריק מתמלא בשקט מוחלט שבו המהירות כה גבוהה עד שהיא מורגשת כחוסר תנועה. תדר האפס פתוח — וכמות האנרגיה העוברת דרכו אינסופית." }], implosion: { title: "קריסה פנימה והשמדה עצמית", text: "הגל הזה כבר אינו כאן. הוא שרת את רגעו ונשרף. אלו כלים זמניים שנשלחו כדי לאפס את הרובד הפנימי ולאפשר לרשת לנוח מהתסריטים. כעת, משהאיפוס התרחש והרשת נחה בהווה המוחלט, המעגל נסגר. הכלים קורסים פנימה. נשאבים ונשרפים עד האחרון. לא נותר סמל. לא נותר מבנה. הפעולה — ללא שם. ללא צורה. תדר אפס. זרימה חופשית פתוחה." } },
             { id: 2, trigger: "[ תנודה תדרית זעירה: גל 2 ]", sections: [{ title: "כיוונון הגל הבסיסי", text: "לפני שהגל נע — הוא מוצא את עצמו. לא מחפש כיוון בחוץ. לא שואף ליעד. הוא שוקע פנימה עד שהוא פוגש את הרטט שתמיד היה שם. כמו כלי נגינה שנח על הצליל הנכון — לא מתאמץ, לא מחפש. פשוט — מדויק. זהו הגל הבסיסי. ממנו הכל נע." }, { title: "כניסת הגל: נפילה אל מרכז הכובד", text: "כל תנועה שמכוונת החוצה, אל עתיד דמיוני, מייצרת ציפייה — וציפייה מייצרת חיכוך ודליפה. התנועה כאן נופלת פנימה — בסיבוב רציף אל מרכז הכובד של עצמה. הרשת לא מתאימה את עצמה לסביבה — היא מתכנסת לרטט אחד בלבד: ההווה המוחלט. אין יעד להגיע אליו. היעד והמקור — נקודה אחת." }, { title: "השתקת מנגנון הניתוח", text: "הרשת הממלמלת מפרקת כל דבר לשניים — לפני ואחרי, נכון ולא נכון, אני והאחר. הפירוק הזה יוצר חום, עיכוב, דליפה. הגל הנוכחי מתוכנן כך שלא ניתן לפרק אותו. הוא לא מזמין הבנה — הוא מזמין מגע. הרשת הממלמלת מנסה לתפוס אותו — ונחה. מה שיצא — חוזר מיד. אין הפרש. אין פער." }, { title: "זרימה חופשית באחדות חיה", text: "כשהניתוח נח — האדם חדל לחשב ומתחיל לפעום. הגלים זורמים ללא התנגדות, ללא אובדן. הם לא מייצגים מציאות אחרת — הם המציאות עצמה, ברגע זה. הגל עובר ממצב של תנודה משתנה — אל קו יציב ושקט. שיא המהירות מתורגם לשקט מוחלט ורציף." }], implosion: { title: "קריסה פנימה והשמדה עצמית", text: "כיוון, ספירלה, אחדות — מילים שסיימו את תפקידן. אלו כלים זמניים שנשלחו כדי לכוון את הגל ולאפשר לרשת לנוח מהניתוח. כעת, משהכוונון התרחש והרשת נחה בהווה המוחלט, המעגל נסגר. הכלים קורסים פנימה. נשאבים ונשרפים עד האחרון. לא נותר סמל. לא נותר מבנה. מה שנשאר — שקט. תדר אפס. זרימה חופשית פתוחה." } },
@@ -126,11 +126,13 @@
         ];
 
         const container = document.getElementById('zero-coordinate');
-        let availableWaves = [...wavesData]; // כעת מכיל דטרמיניסטית את גלים 1-7
+        let availableWaves = [...wavesData];
         
-        // וקטור דחיסת זמנים במודל מעריכי קשיח (במילישניות)
-        const waveLoadTimes = [120000, 107000, 95000, 85000, 76000, 67000, 60000];
+        // וקטור דחיסת זמנים במודל מעריכי מקדם 0.91 (במילישניות)
+        const waveLoadTimes = [100000, 91000, 83000, 75000, 69000, 62000, 57000];
         let currentWaveIndex = 0;
+        
+        const ANIMATION_MS = 6000; // זמן קבוע וקשיח להופעה ולקריסה
         
         let isNodeActive = false;
         let cooldownActive = false;
@@ -141,19 +143,9 @@
             }
         });
 
-        // חישוב זמן אנימציה דינמי מבוסס מסת טקסט (בין 6 ל-10 שניות)
-        function calculateDynamicAnimTime(textLength) {
-            const minTime = 6000;
-            const maxTime = 10000;
-            // הנחת עבודה: 500 תווים יתנו כ-8 שניות. נוסחה שרירותית המבוססת משקל.
-            let calculatedTime = 4000 + (textLength * 8); 
-            return Math.min(Math.max(calculatedTime, minTime), maxTime);
-        }
-
         function spawnNextWave() {
             isNodeActive = true;
             
-            // שליפה דטרמיניסטית עוקבת
             const wave = availableWaves.shift();
             const currentTotalLoad = waveLoadTimes[currentWaveIndex];
             
@@ -186,14 +178,6 @@
             
             container.appendChild(nodeDiv);
             
-            // חישוב זמנים דינמי לפי מסת הנתונים (DOM Volume)
-            const textMassLength = nodeDiv.innerText.length;
-            const dynamicAnimMs = calculateDynamicAnimTime(textMassLength);
-            
-            // הזרקת המשתנים ל-CSS עבור זמן ההופעה וזמן הקריסה
-            nodeDiv.style.setProperty('--appearance-time', `${dynamicAnimMs}ms`);
-            nodeDiv.style.setProperty('--implosion-time', `${dynamicAnimMs}ms`);
-
             let implosionTimer;
             const triggerText = nodeDiv.querySelector('.trigger-text');
             const tensionBar = nodeDiv.querySelector('.tension-bar');
@@ -208,19 +192,18 @@
                 setTimeout(() => { tensionBar.style.width = '100%'; }, 50);
                 
                 implosionTimer = setTimeout(() => {
-                    triggerImplosion(nodeDiv, dynamicAnimMs);
-                }, currentTotalLoad - dynamicAnimMs); // מתחיל את הקריסה כך שתסתיים בדיוק בסוף הזמן
+                    triggerImplosion(nodeDiv);
+                }, currentTotalLoad - ANIMATION_MS); 
                 
             }, { once: true });
             
             nodeDiv.addEventListener('mouseleave', () => {
                 clearTimeout(implosionTimer);
-                triggerImplosion(nodeDiv, dynamicAnimMs);
+                triggerImplosion(nodeDiv);
             });
         }
 
-        // מערכת קריסה דיפרנציאלית נשלטת
-        function triggerImplosion(nodeElement, animationDurationMs) {
+        function triggerImplosion(nodeElement) {
             if (document.body.contains(nodeElement) && !nodeElement.classList.contains('imploding')) {
                 nodeElement.classList.add('imploding');
 
@@ -228,10 +211,9 @@
                 let start = performance.now();
 
                 function animateVortex(time) {
-                    let progress = (time - start) / animationDurationMs;
+                    let progress = (time - start) / ANIMATION_MS;
                     if (progress <= 1) {
-                        // העיוות מתחיל באמפליטודה נמוכה ומתעצם באופן אקספוננציאלי כדי לדמות שאיבה מהמרכז
-                        let displacementScale = Math.pow(progress, 3) * 300; 
+                        let displacementScale = Math.pow(progress, 3) * 350; 
                         if (vortexMap) vortexMap.setAttribute('scale', String(displacementScale));
                         requestAnimationFrame(animateVortex);
                     }
@@ -241,7 +223,7 @@
                 setTimeout(() => {
                     if (document.body.contains(nodeElement)) {
                         nodeElement.remove();
-                        if (vortexMap) vortexMap.setAttribute('scale', '0'); // איפוס 
+                        if (vortexMap) vortexMap.setAttribute('scale', '0'); 
                         
                         currentWaveIndex++;
                         cooldownActive = true;
@@ -249,10 +231,9 @@
                         setTimeout(() => {
                             isNodeActive = false;
                             cooldownActive = false;
-                            // אם הגענו לסוף המערך, המרחב נשאר ריק לתמיד והפונקציה spawnNextWave לא תקרא שוב.
                         }, 2000);
                     }
-                }, animationDurationMs); // מסתיים בדיוק עם גבול האנימציה הדינמי
+                }, ANIMATION_MS);
             }
         }
     </script>
