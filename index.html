@@ -39,13 +39,13 @@
             transform-origin: center center;
         }
 
-        /* פיזיקה 1: הופעת קצר DMN (הבזקים מהירים - 6 שניות) */
+        /* פיזיקה 1: הופעת קצר DMN (הבזקים מהירים - 4 שניות) */
         .unfolded .data-payload {
             display: block;
-            animation: lightningStrike 6s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+            animation: lightningStrike 4s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
         }
         
-        /* תדר הפעימות הואץ: שבירות מהירות ב-20% הראשונים של האנימציה, התייצבות לקראת הסוף */
+        /* תדר הפעימות: שבירות מהירות והתייצבות */
         @keyframes lightningStrike {
             0%   { opacity: 0; filter: brightness(1); }
             2%   { opacity: 0.9; filter: brightness(2.5) contrast(1.5); text-shadow: 0 0 10px #fff; }
@@ -64,10 +64,10 @@
             100% { opacity: 1; filter: brightness(1) contrast(1); text-shadow: none; }
         }
 
-        /* פיזיקה 2: מערבולת דיפרנציאלית (קריסה לנוזל מהמרכז לשוליים - 6 שניות) */
+        /* פיזיקה 2: מערבולת דיפרנציאלית (קריסה לנוזל מהמרכז לשוליים - 4 שניות) */
         .latent-node.imploding .data-payload {
             filter: url(#liquid-vortex);
-            animation: differentialVortex 6s cubic-bezier(0.5, 0, 0.1, 1) forwards !important;
+            animation: differentialVortex 4s cubic-bezier(0.5, 0, 0.1, 1) forwards !important;
             pointer-events: none;
         }
 
@@ -128,11 +128,11 @@
         const container = document.getElementById('zero-coordinate');
         let availableWaves = [...wavesData];
         
-        // וקטור דחיסת זמנים במודל מעריכי מקדם 0.91 (במילישניות)
+        // וקטור דחיסת זמנים נשאר בקיבוע הקודם (100 שניות לגל 1, 57 שניות לגל 7)
         const waveLoadTimes = [100000, 91000, 83000, 75000, 69000, 62000, 57000];
         let currentWaveIndex = 0;
         
-        const ANIMATION_MS = 6000; // זמן קבוע וקשיח להופעה ולקריסה
+        const ANIMATION_MS = 4000; // זמן קבוע וקשיח להופעה ולקריסה
         
         let isNodeActive = false;
         let cooldownActive = false;
