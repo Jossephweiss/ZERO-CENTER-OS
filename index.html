@@ -39,32 +39,37 @@
             transform-origin: center center;
         }
 
-        /* פיזיקה 1: הופעת קצר DMN (הבזקים מהירים - 4 שניות) */
+        /* פיזיקה 1: הופעת קצר DMN (9 פעימות מהירות בדחיסה של 3 שניות) */
         .unfolded .data-payload {
             display: block;
-            animation: lightningStrike 4s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+            animation: lightningStrike 3s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
         }
         
-        /* תדר הפעימות: שבירות מהירות והתייצבות */
+        /* מיפוי 9 שיאי אטימות (Pulses) מדויקים לאורך ציר הזמן */
         @keyframes lightningStrike {
             0%   { opacity: 0; filter: brightness(1); }
-            2%   { opacity: 0.9; filter: brightness(2.5) contrast(1.5); text-shadow: 0 0 10px #fff; }
-            4%   { opacity: 0; }
-            7%   { opacity: 0.8; filter: brightness(2); }
-            9%   { opacity: 0; }
-            12%  { opacity: 0.95; filter: brightness(1.8); }
-            15%  { opacity: 0.1; }
-            18%  { opacity: 0.85; filter: brightness(1.5); }
-            22%  { opacity: 0; }
-            35%  { opacity: 0.9; }
-            40%  { opacity: 0.4; }
-            55%  { opacity: 0.95; }
-            65%  { opacity: 0.6; }
-            80%  { opacity: 1; text-shadow: 0 0 5px rgba(255,255,255,0.3); }
-            100% { opacity: 1; filter: brightness(1) contrast(1); text-shadow: none; }
+            3%   { opacity: 0.9; filter: brightness(2.5) contrast(1.5); text-shadow: 0 0 10px #fff; } /* פעימה 1 */
+            6%   { opacity: 0; }
+            12%  { opacity: 0.8; filter: brightness(2); } /* פעימה 2 */
+            15%  { opacity: 0; }
+            23%  { opacity: 0.95; filter: brightness(1.8); } /* פעימה 3 */
+            27%  { opacity: 0.1; }
+            34%  { opacity: 0.85; filter: brightness(2.2); } /* פעימה 4 */
+            38%  { opacity: 0; }
+            45%  { opacity: 0.9; filter: brightness(1.5); } /* פעימה 5 */
+            49%  { opacity: 0.2; }
+            56%  { opacity: 0.95; filter: brightness(2); } /* פעימה 6 */
+            60%  { opacity: 0.1; }
+            67%  { opacity: 0.9; filter: brightness(1.7); } /* פעימה 7 */
+            71%  { opacity: 0.2; }
+            78%  { opacity: 0.85; filter: brightness(2.5); text-shadow: 0 0 8px #fff; } /* פעימה 8 */
+            82%  { opacity: 0.1; }
+            89%  { opacity: 0.95; filter: brightness(1.8); } /* פעימה 9 */
+            93%  { opacity: 0.5; }
+            100% { opacity: 1; filter: brightness(1) contrast(1); text-shadow: none; } /* התייצבות מוחלטת */
         }
 
-        /* פיזיקה 2: מערבולת דיפרנציאלית (קריסה לנוזל מהמרכז לשוליים - 4 שניות) */
+        /* פיזיקה 2: מערבולת דיפרנציאלית (קריסה לנוזל מהמרכז לשוליים - נותר על 4 שניות) */
         .latent-node.imploding .data-payload {
             filter: url(#liquid-vortex);
             animation: differentialVortex 4s cubic-bezier(0.5, 0, 0.1, 1) forwards !important;
@@ -128,11 +133,11 @@
         const container = document.getElementById('zero-coordinate');
         let availableWaves = [...wavesData];
         
-        // וקטור דחיסת זמנים נשאר בקיבוע הקודם (100 שניות לגל 1, 57 שניות לגל 7)
+        // וקטור דחיסת זמנים נותר קבוע (מבטיח כעת +1 שניות זמן קריאה נטו עקב קיצור ההופעה)
         const waveLoadTimes = [100000, 91000, 83000, 75000, 69000, 62000, 57000];
         let currentWaveIndex = 0;
         
-        const ANIMATION_MS = 4000; // זמן קבוע וקשיח להופעה ולקריסה
+        const IMPLOSION_ANIMATION_MS = 4000; // זמן קבוע לקריסה בלבד
         
         let isNodeActive = false;
         let cooldownActive = false;
@@ -191,9 +196,10 @@
                 tensionBar.style.transitionDuration = `${currentTotalLoad}ms`;
                 setTimeout(() => { tensionBar.style.width = '100%'; }, 50);
                 
+                // טיימר הקריסה ממתין עד לסיום מסת הזמן המחושבת בניקוי זמן אנימציית הקריסה
                 implosionTimer = setTimeout(() => {
                     triggerImplosion(nodeDiv);
-                }, currentTotalLoad - ANIMATION_MS); 
+                }, currentTotalLoad - IMPLOSION_ANIMATION_MS); 
                 
             }, { once: true });
             
@@ -211,7 +217,7 @@
                 let start = performance.now();
 
                 function animateVortex(time) {
-                    let progress = (time - start) / ANIMATION_MS;
+                    let progress = (time - start) / IMPLOSION_ANIMATION_MS;
                     if (progress <= 1) {
                         let displacementScale = Math.pow(progress, 3) * 350; 
                         if (vortexMap) vortexMap.setAttribute('scale', String(displacementScale));
@@ -233,7 +239,7 @@
                             cooldownActive = false;
                         }, 2000);
                     }
-                }, ANIMATION_MS);
+                }, IMPLOSION_ANIMATION_MS);
             }
         }
     </script>
