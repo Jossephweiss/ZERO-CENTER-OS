@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>מסר 7 — הטלטלה</title>
+<meta name="description" content="יחידת תרגול אישית בהשראת מסר 7: מה שמתפרק עכשיו הוא לא אתה.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Frank+Ruhl+Libre:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5efe4; --card:#fffaf2; --ink:#1c2238; --muted:#5d6173; --line:#d9cfbf;
+  --lapis:#23408e; --lapis-soft:#e4e9f7; --gold:#b07d12; --clay:#9c5b3b; --warn:#8a2c1d;
+  --radius:16px;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0f1426; --card:#171e36; --ink:#eef0f7; --muted:#a7adc2; --line:#2f3a5c;
+    --lapis:#7f9cf0; --lapis-soft:#1f2a4d; --gold:#e0b44c; --clay:#d19276; --warn:#ff9b87; }
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font-family:Assistant,system-ui,sans-serif;font-size:18px;line-height:1.6;-webkit-text-size-adjust:100%}
+main{max-width:560px;margin:0 auto;padding:24px 16px calc(40px + env(safe-area-inset-bottom));min-height:100svh;display:flex;flex-direction:column}
+h1,h2{font-family:"Frank Ruhl Libre",serif;font-weight:700;line-height:1.25;margin:0 0 12px}
+h1{font-size:30px} h2{font-size:24px}
+p{margin:0 0 14px}
+.kicker{color:var(--gold);font-weight:700;font-size:14px;letter-spacing:.04em;margin-bottom:6px}
+.core{font-family:"Frank Ruhl Libre",serif;font-size:26px;line-height:1.35;color:var(--lapis);margin:8px 0 20px}
+.muted{color:var(--muted)} .small{font-size:15px}
+.screen{display:none;flex:1;flex-direction:column;animation:in .35s ease}
+.screen.on{display:flex}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.screen{animation:none}}
+.grow{flex:1}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+button{font:inherit;cursor:pointer;border-radius:999px;border:1.5px solid var(--lapis);padding:12px 20px;min-height:48px;background:transparent;color:var(--lapis);font-weight:600}
+button.primary{background:var(--lapis);color:var(--card)}
+button.link{border:none;padding:8px 4px;min-height:40px;text-decoration:underline;text-underline-offset:4px}
+button:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+textarea,input[type=datetime-local]{font:inherit;width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px;background:var(--card);color:var(--ink)}
+textarea{min-height:120px;resize:vertical}
+.progress{display:flex;gap:6px;margin-bottom:22px}
+.progress i{flex:1;height:4px;border-radius:4px;background:var(--line)}
+.progress i.on{background:var(--gold)}
+.cards{display:grid;gap:12px}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius);padding:16px;text-align:right;color:var(--ink);font-weight:400;border-radius:var(--radius)}
+.card b{display:block;font-family:"Frank Ruhl Libre",serif;font-size:21px;color:var(--lapis);margin-bottom:4px}
+.card[aria-pressed=true]{border-color:var(--lapis);background:var(--lapis-soft)}
+ol.steps{padding-inline-start:22px;margin:0 0 10px} ol.steps li{margin-bottom:8px}
+.timer{font-family:"Frank Ruhl Libre",serif;font-size:40px;color:var(--lapis);text-align:center;margin:10px 0}
+.ruler{margin-bottom:18px}
+.ruler .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.ruler .top b{font-size:18px} .ruler .top output{font-family:"Frank Ruhl Libre",serif;font-size:24px;color:var(--lapis);min-width:1.2em;text-align:center}
+.ruler .line{font-size:14px;color:var(--muted)}
+.ruler input{width:100%;accent-color:var(--lapis);height:32px}
+.ruler .poles{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
+canvas.body{width:100%;height:300px;touch-action:none;display:block;margin:4px 0 8px}
+.reflect{background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:14px}
+.reflect .row{margin-bottom:6px}
+.insight{border-inline-start:4px solid var(--gold);padding:10px 14px;background:var(--card);border-radius:10px;margin:12px 0;font-size:19px}
+.safety{border:1.5px solid var(--warn);color:var(--warn);border-radius:12px;padding:12px 14px;margin:12px 0;font-weight:600}
+.safety a{color:inherit}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chips button{min-height:40px;padding:8px 14px;font-size:16px}
+.chips button[aria-pressed=true]{background:var(--lapis);color:var(--card)}
+.agent{background:var(--lapis-soft);border-radius:var(--radius);padding:16px;margin:14px 0;white-space:pre-wrap}
+.agent .who{font-size:14px;color:var(--muted);margin-bottom:4px;font-weight:600}
+.hidden{display:none!important}
+footer{margin-top:28px;font-size:14px;color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+  <div class="progress" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+  <!-- 1. המסר -->
+  <section class="screen on" id="s-message" aria-labelledby="h-message">
+    <div class="kicker">מסר 7</div>
+    <h1 id="h-message">הטלטלה</h1>
+    <p class="core" id="m-core"></p>
+    <p id="m-body"></p>
+    <div class="grow"></div>
+    <div class="btns"><button class="primary" data-go="s-questions">להמשיך</button></div>
+    <footer>התשובות שלכם נשלחות לסוכן רק כדי לשקף לכם, ולא נשמרות. כשסוגרים את הדף הן נעלמות.</footer>
+  </section>
+
+  <!-- 2. שאלות -->
+  <section class="screen" id="s-questions" aria-labelledby="h-q">
+    <div class="kicker" id="q-count"></div>
+    <h2 id="h-q"></h2>
+    <label for="q-answer" class="muted small">כתבו במילים שלכם. אין תשובה נכונה.</label>
+    <textarea id="q-answer" dir="rtl"></textarea>
+    <div class="btns">
+      <button class="primary" id="q-next">הבא</button>
+      <button id="q-done" class="hidden">מספיק, להמשיך</button>
+    </div>
+  </section>
+
+  <!-- 3. בחירת עוגן -->
+  <section class="screen" id="s-anchors" aria-labelledby="h-a">
+    <h2 id="h-a">איזה עוגן מדבר אליכם עכשיו?</h2>
+    <p class="muted small">בחרו אחד. אפשר לחזור ולבחור אחר אחר כך.</p>
+    <div class="cards" id="anchors"></div>
+  </section>
+
+  <!-- 4. תרגול -->
+  <section class="screen" id="s-practice" aria-labelledby="h-p">
+    <div class="kicker">תרגול קצר</div>
+    <h2 id="h-p"></h2>
+    <ol class="steps" id="p-steps"></ol>
+    <div id="p-timer-wrap" class="hidden">
+      <div class="timer" id="p-timer" aria-live="polite"></div>
+      <div class="btns" style="justify-content:center"><button id="p-timer-btn">להתחיל דקה</button></div>
+    </div>
+    <div class="grow"></div>
+    <div class="btns"><button class="primary" data-go="s-rulers">סיימתי</button></div>
+  </section>
+
+  <!-- 5. סרגלים -->
+  <section class="screen" id="s-rulers" aria-labelledby="h-r">
+    <h2 id="h-r">איפה אתם עכשיו?</h2>
+    <p class="muted small">הזיזו כל סרגל לפי התחושה, מ־0 עד 9. זה עוזר לדעת איפה אתם, לא קובע. המדידה בבחירה שלכם.</p>
+    <canvas class="body" id="body-live" aria-label="הגוף שנוצר מששת הסרגלים. אפשר לסובב במגע."></canvas>
+    <div id="rulers"></div>
+    <div class="btns">
+      <button class="primary" id="r-done">לראות את השיקוף</button>
+      <button class="link" id="r-skip">לדלג על המדידה</button>
+    </div>
+  </section>
+
+  <!-- 6. שיקוף -->
+  <section class="screen" id="s-reflect" aria-labelledby="h-rf">
+    <h2 id="h-rf">השיקוף</h2>
+    <div id="rf-body-wrap">
+      <canvas class="body" id="body-final" aria-label="הגוף שלכם. אפשר לסובב במגע."></canvas>
+      <div class="reflect" id="rf-summary"></div>
+    </div>
+    <div class="safety hidden" id="rf-safety" role="note"></div>
+    <div id="rf-choose" class="hidden">
+      <p class="small" id="rf-choose-q"></p>
+      <div class="chips" id="rf-chips"></div>
+    </div>
+    <div class="insight hidden" id="rf-insight"></div>
+    <div class="agent" id="rf-agent" aria-live="polite"><div class="who">הסוכן</div><div id="rf-agent-text">רגע, קורא את מה שכתבתם…</div></div>
+
+    <h2 style="margin-top:8px">מה הצעד הבא?</h2>
+    <div class="btns" id="next">
+      <button id="n-more">עוד תרגול</button>
+      <button id="n-schedule">לקבוע מועד</button>
+      <button id="n-other">משהו אחר</button>
+    </div>
+    <div id="n-schedule-box" class="hidden" style="margin-top:12px">
+      <label for="n-when" class="small">מתי?</label>
+      <input type="datetime-local" id="n-when">
+      <div class="btns"><button class="primary" id="n-ics">להוסיף ליומן</button></div>
+    </div>
+    <div id="n-other-box" class="hidden" style="margin-top:12px">
+      <label for="n-text" class="small">מה הייתם רוצים?</label>
+      <textarea id="n-text"></textarea>
+      <div class="btns"><button class="primary" id="n-send">לשלוח לסוכן</button></div>
+    </div>
+  </section>
+</main>
+
+<script type="module">
+import { MESSAGE, RULERS, SAFETY_LINE, MAX } from './data.js';
+import { reflect, rulerName } from './logic.js';
+import { createBody } from './body.js';
+
+const $ = s => document.querySelector(s);
+const state = {
+  answers: [], q: 0, anchor: null, measured: false,
+  values: Object.fromEntries(RULERS.map(r => [r.id, 5])),
+  distress: false, choice: null, history: [],
+};
+const ORDER = ['s-message', 's-questions', 's-anchors', 's-practice', 's-rulers', 's-reflect'];
+
+function go(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === id));
+  const i = ORDER.indexOf(id);
+  document.querySelectorAll('.progress i').forEach((el, k) => el.classList.toggle('on', k <= i));
+  window.scrollTo({ top: 0 });
+  const h = document.querySelector('#' + id + ' h1, #' + id + ' h2');
+  if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
+  if (id === 's-questions') showQuestion();
+  if (id === 's-rulers') liveBody();
+  if (id === 's-reflect') showReflection(true);
+}
+document.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => go(b.dataset.go)));
+
+// 1. המסר
+$('#m-core').textContent = MESSAGE.core;
+$('#m-body').textContent = MESSAGE.body;
+
+// 2. שאלות
+function showQuestion() {
+  const i = state.q;
+  $('#q-count').textContent = `שאלה ${i + 1} מתוך ${MESSAGE.questions.length}`;
+  $('#h-q').textContent = MESSAGE.questions[i];
+  $('#q-answer').value = state.answers[i] || '';
+  $('#q-done').classList.toggle('hidden', i === 0);
+  $('#q-next').textContent = i === MESSAGE.questions.length - 1 ? 'להמשיך' : 'הבא';
+  setTimeout(() => $('#q-answer').focus(), 50);
+}
+$('#q-next').addEventListener('click', () => {
+  state.answers[state.q] = $('#q-answer').value.trim();
+  if (state.q < MESSAGE.questions.length - 1) { state.q++; showQuestion(); } else go('s-anchors');
+});
+$('#q-done').addEventListener('click', () => { state.answers[state.q] = $('#q-answer').value.trim(); go('s-anchors'); });
+
+// 3. עוגנים
+MESSAGE.anchors.forEach(a => {
+  const b = document.createElement('button');
+  b.className = 'card'; b.setAttribute('aria-pressed', 'false');
+  b.innerHTML = `<b></b><span></span>`;
+  b.querySelector('b').textContent = a.title; b.querySelector('span').textContent = a.text;
+  b.addEventListener('click', () => {
+    state.anchor = a;
+    document.querySelectorAll('#anchors .card').forEach(c => c.setAttribute('aria-pressed', String(c === b)));
+    showPractice(); go('s-practice');
+  });
+  $('#anchors').appendChild(b);
+});
+
+// 4. תרגול
+let timerId = 0;
+function showPractice() {
+  const a = state.anchor;
+  $('#h-p').textContent = a.title;
+  $('#p-steps').innerHTML = '';
+  a.practice.forEach(t => { const li = document.createElement('li'); li.textContent = t; $('#p-steps').appendChild(li); });
+  $('#p-timer-wrap').classList.toggle('hidden', !a.minutes);
+  clearInterval(timerId); $('#p-timer').textContent = a.minutes ? `${a.minutes}:00` : '';
+  $('#p-timer-btn').disabled = false;
+}
+$('#p-timer-btn').addEventListener('click', () => {
+  let left = state.anchor.minutes * 60; $('#p-timer-btn').disabled = true;
+  clearInterval(timerId);
+  timerId = setInterval(() => {
+    left--; $('#p-timer').textContent = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
+    if (left <= 0) { clearInterval(timerId); $('#p-timer').textContent = 'הדקה הסתיימה'; }
+  }, 1000);
+});
+
+// 5. סרגלים
+let live = null, final = null;
+RULERS.forEach(r => {
+  const d = document.createElement('div'); d.className = 'ruler';
+  d.innerHTML = `<div class="top"><label for="r${r.id}"><b></b></label><output id="o${r.id}"></output></div>
+    <div class="line"></div><input type="range" id="r${r.id}" min="0" max="${MAX}" step="1">
+    <div class="poles"><span class="lo"></span><span class="hi"></span></div>`;
+  d.querySelector('b').textContent = r.name;
+  d.querySelector('.line').textContent = r.line;
+  d.querySelector('.lo').textContent = '0 · ' + r.lo;
+  d.querySelector('.hi').textContent = r.hi + ' · 9';
+  const inp = d.querySelector('input');
+  inp.value = state.values[r.id];
+  d.querySelector('output').textContent = inp.value;
+  inp.setAttribute('aria-valuetext', `${inp.value} מתוך 9`);
+  inp.addEventListener('input', () => {
+    state.values[r.id] = Number(inp.value);
+    d.querySelector('output').textContent = inp.value;
+    inp.setAttribute('aria-valuetext', `${inp.value} מתוך 9`);
+    live && live.set(state.values);
+  });
+  $('#rulers').appendChild(d);
+});
+function liveBody() { if (!live) live = createBody($('#body-live')); live.set(state.values); }
+$('#r-done').addEventListener('click', () => { state.measured = true; go('s-reflect'); });
+$('#r-skip').addEventListener('click', () => { state.measured = false; go('s-reflect'); });
+
+// 6. שיקוף
+function names(ids) { return ids.map(rulerName).join(', '); }
+function showReflection(callAgent) {
+  $('#rf-body-wrap').classList.toggle('hidden', !state.measured);
+  $('#rf-choose').classList.add('hidden');
+  $('#rf-insight').classList.add('hidden');
+  let r = null;
+  if (state.measured) {
+    if (!final) final = createBody($('#body-final'));
+    final.set(state.values);
+    r = reflect(state.values, { distress: state.distress, choice: state.choice });
+    const s = $('#rf-summary'); s.innerHTML = '';
+    const row = t => { const d = document.createElement('div'); d.className = 'row'; d.textContent = t; s.appendChild(d); };
+    row(`ממוצע: ${r.averageWords}.`);
+    if (r.allEqual) row(r.allMax ? 'כל הסרגלים ב־9.' : 'הגוף מאוזן כרגע.');
+    else {
+      row(`הממד החזק: ${names(r.strong)}.`);
+      row(`הממד שמבקש תשומת לב: ${names(r.attention)}.`);
+    }
+    if (r.choices.length && !r.allMax) {
+      $('#rf-choose').classList.remove('hidden');
+      $('#rf-choose-q').textContent = r.allEqual ? 'על איזה סרגל בא לכם לקבל תובנה?' : 'על איזה מהם בא לכם להתעכב?';
+      const chips = $('#rf-chips'); chips.innerHTML = '';
+      r.choices.forEach(id => {
+        const b = document.createElement('button'); b.textContent = rulerName(id);
+        b.setAttribute('aria-pressed', String(r.focus === id));
+        b.addEventListener('click', () => { state.choice = id; showReflection(false); });
+        chips.appendChild(b);
+      });
+    }
+    if (r.insight) { $('#rf-insight').textContent = r.insight; $('#rf-insight').classList.remove('hidden'); }
+  }
+  const safety = state.distress || (state.measured && state.values[7] <= 2);
+  $('#rf-safety').classList.toggle('hidden', !safety);
+  $('#rf-safety').innerHTML = '';
+  if (safety) {
+    const a = document.createElement('a'); a.href = 'tel:1201'; a.textContent = SAFETY_LINE;
+    $('#rf-safety').appendChild(a);
+  }
+  if (callAgent) askAgent(r);
+}
+
+async function askAgent(r, followUp) {
+  const box = $('#rf-agent-text');
+  box.textContent = 'רגע, קורא את מה שכתבתם…';
+  if (followUp) state.history.push({ role: 'user', content: followUp });
+  try {
+    const res = await fetch('/api/reflect', {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        questions: MESSAGE.questions, answers: state.answers,
+        anchor: state.anchor?.title, values: state.measured ? state.values : null,
+        insight: r?.insight || null, history: state.history,
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.text) throw new Error(data.error || 'error');
+    box.textContent = data.text;
+    state.history.push({ role: 'assistant', content: data.text });
+    if (data.distress && !state.distress) { state.distress = true; showReflection(false); }
+  } catch (e) {
+    box.textContent = 'הסוכן לא זמין כרגע. השיקוף והתובנה שלמעלה עומדים גם בלעדיו.';
+  }
+}
+
+$('#n-more').addEventListener('click', () => go('s-anchors'));
+$('#n-schedule').addEventListener('click', () => { $('#n-schedule-box').classList.toggle('hidden'); $('#n-other-box').classList.add('hidden'); });
+$('#n-other').addEventListener('click', () => { $('#n-other-box').classList.toggle('hidden'); $('#n-schedule-box').classList.add('hidden'); });
+$('#n-send').addEventListener('click', () => {
+  const t = $('#n-text').value.trim(); if (!t) return;
+  $('#n-text').value = ''; askAgent(null, t);
+});
+$('#n-ics').addEventListener('click', () => {
+  const v = $('#n-when').value; if (!v) { $('#n-when').focus(); return; }
+  const d = new Date(v), e = new Date(d.getTime() + 15 * 60000);
+  const f = x => `${x.getFullYear()}${String(x.getMonth() + 1).padStart(2, '0')}${String(x.getDate()).padStart(2, '0')}T${String(x.getHours()).padStart(2, '0')}${String(x.getMinutes()).padStart(2, '0')}00`;
+  const url = location.origin + location.pathname;
+  const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//zerocenteros//practice//HE', 'BEGIN:VEVENT',
+    `UID:${Date.now()}@zerocenteros.net`, `DTSTAMP:${f(new Date())}`, `DTSTART:${f(d)}`, `DTEND:${f(e)}`,
+    'SUMMARY:תרגול — מסר 7', `DESCRIPTION:${url}`, 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' })); a.download = 'practice-7.ics'; a.click();
+});
+</script>
+</body>
+</html>
