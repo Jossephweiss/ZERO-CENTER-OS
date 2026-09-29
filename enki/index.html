@@ -154,7 +154,10 @@ footer{margin-top:28px;font-size:14px;color:var(--muted)}
     <div id="n-schedule-box" class="hidden" style="margin-top:12px">
       <label for="n-when" class="small">מתי?</label>
       <input type="datetime-local" id="n-when">
-      <div class="btns"><button class="primary" id="n-ics">להוסיף ליומן</button></div>
+      <div class="btns">
+        <button class="primary" id="n-gcal">להוסיף ליומן Google</button>
+        <button class="link" id="n-ics">קובץ ליומן אחר</button>
+      </div>
     </div>
     <div id="n-other-box" class="hidden" style="margin-top:12px">
       <label for="n-text" class="small">מה הייתם רוצים?</label>
@@ -342,6 +345,17 @@ $('#n-other').addEventListener('click', () => { $('#n-other-box').classList.togg
 $('#n-send').addEventListener('click', () => {
   const t = $('#n-text').value.trim(); if (!t) return;
   $('#n-text').value = ''; askAgent(null, t);
+});
+$('#n-gcal').addEventListener('click', () => {
+  const v = $('#n-when').value; if (!v) { $('#n-when').focus(); return; }
+  const d = new Date(v), e = new Date(d.getTime() + 15 * 60000);
+  const f = x => `${x.getFullYear()}${String(x.getMonth() + 1).padStart(2, '0')}${String(x.getDate()).padStart(2, '0')}T${String(x.getHours()).padStart(2, '0')}${String(x.getMinutes()).padStart(2, '0')}00`;
+  const p = new URLSearchParams({
+    action: 'TEMPLATE', text: 'תרגול — מסר 7', dates: `${f(d)}/${f(e)}`,
+    details: location.origin + location.pathname,
+    ctz: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Jerusalem',
+  });
+  window.open('https://calendar.google.com/calendar/render?' + p.toString(), '_blank', 'noopener');
 });
 $('#n-ics').addEventListener('click', () => {
   const v = $('#n-when').value; if (!v) { $('#n-when').focus(); return; }
