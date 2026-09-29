@@ -57,6 +57,12 @@ ol.steps{padding-inline-start:22px;margin:0 0 10px} ol.steps li{margin-bottom:8p
 .ruler input{width:100%;accent-color:var(--lapis);height:32px}
 .ruler .poles{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
 canvas.body{width:100%;height:300px;touch-action:none;display:block;margin:4px 0 8px}
+#s-reflect canvas.body{height:190px;margin:0}
+#s-reflect h2{margin-bottom:6px}
+#s-reflect .reflect{padding:10px 14px;margin-bottom:8px;font-size:16px}
+#s-reflect .insight{margin:8px 0;font-size:17px}
+#s-reflect .agent{margin:8px 0;padding:12px 14px;font-size:16px}
+#s-reflect .btns{margin-top:8px}
 .reflect{background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:14px}
 .reflect .row{margin-bottom:6px}
 .insight{border-inline-start:4px solid var(--gold);padding:10px 14px;background:var(--card);border-radius:10px;margin:12px 0;font-size:19px}
@@ -285,14 +291,15 @@ function showReflection(callAgent) {
     if (!final) final = createBody($('#body-final'));
     final.set(state.values);
     r = reflect(state.values, { distress: state.distress, choice: state.choice });
-    const s = $('#rf-summary'); s.innerHTML = '';
-    const row = t => { const d = document.createElement('div'); d.className = 'row'; d.textContent = t; s.appendChild(d); };
+    const s = $('#rf-summary'); const parts = [];
+    const row = t => parts.push(t);
     row(`ממוצע: ${r.averageWords}.`);
     if (r.allEqual) row(r.allMax ? 'כל הסרגלים ב־9.' : 'הגוף מאוזן כרגע.');
     else {
       row(`הממד החזק: ${names(r.strong)}.`);
       row(`הממד שמבקש תשומת לב: ${names(r.attention)}.`);
     }
+    s.textContent = parts.join(' ');
     if (r.choices.length && !r.allMax) {
       $('#rf-choose').classList.remove('hidden');
       $('#rf-choose-q').textContent = r.allEqual ? 'על איזה סרגל בא לכם לקבל תובנה?' : 'על איזה מהם בא לכם להתעכב?';
@@ -340,11 +347,21 @@ async function askAgent(r, followUp) {
 }
 
 $('#n-more').addEventListener('click', () => go('s-anchors'));
-$('#n-schedule').addEventListener('click', () => { $('#n-schedule-box').classList.toggle('hidden'); $('#n-other-box').classList.add('hidden'); });
-$('#n-other').addEventListener('click', () => { $('#n-other-box').classList.toggle('hidden'); $('#n-schedule-box').classList.add('hidden'); });
+function openBox(show, hide, field) {
+  $(hide).classList.add('hidden');
+  const box = $(show); box.classList.toggle('hidden');
+  if (!box.classList.contains('hidden')) {
+    box.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'end' });
+    setTimeout(() => $(field).focus({ preventScroll: true }), 300);
+  }
+}
+$('#n-schedule').addEventListener('click', () => openBox('#n-schedule-box', '#n-other-box', '#n-when'));
+$('#n-other').addEventListener('click', () => openBox('#n-other-box', '#n-schedule-box', '#n-text'));
 $('#n-send').addEventListener('click', () => {
   const t = $('#n-text').value.trim(); if (!t) return;
-  $('#n-text').value = ''; askAgent(null, t);
+  $('#n-text').value = ''; $('#n-other-box').classList.add('hidden');
+  $('#rf-agent').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  askAgent(null, t);
 });
 $('#n-gcal').addEventListener('click', () => {
   const v = $('#n-when').value; if (!v) { $('#n-when').focus(); return; }
