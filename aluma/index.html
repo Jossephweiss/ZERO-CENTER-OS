@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>מסר 7 — הטלטלה</title>
-<meta name="description" content="יחידת תרגול אישית בהשראת מסר 7: מה שמתפרק עכשיו הוא לא אתה.">
+<title>אלומת קשב</title>
+<meta name="description" content="מראה לקשב שלך: לראות לאן הוא נודד, ולכוון אותו מחדש.">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -75,6 +75,8 @@ canvas.body{width:100%;height:300px;touch-action:none;display:block;margin:4px 0
 .agent .who{font-size:14px;color:var(--muted);margin-bottom:4px;font-weight:600}
 .hidden{display:none!important}
 footer{margin-top:28px;font-size:14px;color:var(--muted)}
+.credit{margin:10px 0 0;padding-top:10px;border-top:1px solid var(--line);font-size:14px}
+.credit a{color:var(--lapis);font-weight:600}
 </style>
 </head>
 <body>
@@ -83,13 +85,14 @@ footer{margin-top:28px;font-size:14px;color:var(--muted)}
 
   <!-- 1. המסר -->
   <section class="screen on" id="s-message" aria-labelledby="h-message">
-    <div class="kicker">מסר 7</div>
-    <h1 id="h-message">הטלטלה</h1>
+    <div class="kicker">אלומת קשב</div>
+    <h1 id="h-message"></h1>
     <p class="core" id="m-core"></p>
     <p id="m-body"></p>
     <div class="grow"></div>
     <div class="btns"><button class="primary" data-go="s-questions">להמשיך</button></div>
-    <footer>התשובות שלכם נשלחות לסוכן רק כדי לשקף לכם, ולא נשמרות. כשסוגרים את הדף הן נעלמות.</footer>
+    <footer>התשובות שלכם נשלחות לסוכן רק כדי לשקף לכם, ולא נשמרות. כשסוגרים את הדף הן נעלמות.
+      <p class="credit" id="credit">הרעיון נולד בהשראת הסרטון <b>Remember</b>. כל התודה ליוצריו.</p></footer>
   </section>
 
   <!-- 2. שאלות -->
@@ -200,6 +203,7 @@ function go(id) {
 document.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => go(b.dataset.go)));
 
 // 1. המסר
+$('#h-message').textContent = MESSAGE.name;
 $('#m-core').textContent = MESSAGE.core;
 $('#m-body').textContent = MESSAGE.body;
 
@@ -331,7 +335,7 @@ async function askAgent(r, followUp) {
     const res = await fetch('/api/reflect', {
       method: 'POST', headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
-        questions: MESSAGE.questions, answers: state.answers,
+        core: MESSAGE.core, questions: MESSAGE.questions, answers: state.answers,
         anchor: state.anchor?.title, values: state.measured ? state.values : null,
         insight: r?.insight || null, history: state.history,
       }),
@@ -368,7 +372,7 @@ $('#n-gcal').addEventListener('click', () => {
   const d = new Date(v), e = new Date(d.getTime() + 15 * 60000);
   const f = x => `${x.getFullYear()}${String(x.getMonth() + 1).padStart(2, '0')}${String(x.getDate()).padStart(2, '0')}T${String(x.getHours()).padStart(2, '0')}${String(x.getMinutes()).padStart(2, '0')}00`;
   const p = new URLSearchParams({
-    action: 'TEMPLATE', text: 'תרגול — מסר 7', dates: `${f(d)}/${f(e)}`,
+    action: 'TEMPLATE', text: 'תרגול — אלומת קשב', dates: `${f(d)}/${f(e)}`,
     details: location.origin + location.pathname,
     ctz: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Jerusalem',
   });
@@ -381,9 +385,9 @@ $('#n-ics').addEventListener('click', () => {
   const url = location.origin + location.pathname;
   const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//zerocenteros//practice//HE', 'BEGIN:VEVENT',
     `UID:${Date.now()}@zerocenteros.net`, `DTSTAMP:${f(new Date())}`, `DTSTART:${f(d)}`, `DTEND:${f(e)}`,
-    'SUMMARY:תרגול — מסר 7', `DESCRIPTION:${url}`, 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+    'SUMMARY:תרגול — אלומת קשב', `DESCRIPTION:${url}`, 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' })); a.download = 'practice-7.ics'; a.click();
+  a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' })); a.download = 'aluma.ics'; a.click();
 });
 </script>
 </body>
